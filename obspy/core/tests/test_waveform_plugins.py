@@ -182,14 +182,15 @@ class WaveformPluginsTestCase(unittest.TestCase):
         be all the same.
         """
         data = np.arange(0, 500)
-        start = UTCDateTime(2009, 1, 13, 12, 1, 2, 999000)
+        start_time = UTCDateTime(2009, 1, 13, 12, 1, 2, 999000)
         formats = _getEntryPoints('obspy.plugin.waveform', 'writeFormat')
         for format in formats:
-            # XXX: skip SEGY and SU formats for now as they need some special
-            # headers.
-            if format in ['SEGY', 'SU', 'SEG2']:
-                continue
+          # XXX: skip SEGY and SU formats for now as they need some special
+          # headers.
+          if format in ['SEGY', 'SU', 'SEG2']:
+              continue
 
+          def do_stuff():
             dt = np.int_
             if format in ('MSEED', 'GSE2'):
                 dt = np.int32
@@ -200,7 +201,7 @@ class WaveformPluginsTestCase(unittest.TestCase):
             tr.stats.channel = "EHE"
             tr.stats.calib = 0.999999
             tr.stats.delta = 0.005
-            tr.stats.starttime = start
+            tr.stats.starttime = start_time
             # create waveform file with given format and byte order
             with NamedTemporaryFile() as tf:
                 outfile = tf.name
@@ -245,6 +246,9 @@ class WaveformPluginsTestCase(unittest.TestCase):
                 if format == 'Q':
                     os.remove(outfile[:-4] + '.QBN')
                     os.remove(outfile[:-4] + '.QHD')
+
+          import cProfile
+          cProfile.runctx('do_stuff()', globals(), locals())
 
     def test_issue193(self):
         """
