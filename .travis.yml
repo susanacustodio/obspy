@@ -22,6 +22,7 @@ before_install:
   - pip install --use-mirrors future
   # current pyimgur stable release has a py2.6 incompatibility
   - pip install https://github.com/megies/PyImgur/archive/py26.zip
+  - pip install yappi
   - pip freeze
 install:
   - git version
