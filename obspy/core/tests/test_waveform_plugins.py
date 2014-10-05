@@ -186,14 +186,15 @@ class WaveformPluginsTestCase(unittest.TestCase):
         start_time = UTCDateTime(2009, 1, 13, 12, 1, 2, 999000)
         formats = _getEntryPoints('obspy.plugin.waveform', 'writeFormat')
         for format in formats:
-            # XXX: skip SEGY and SU formats for now as they need some special
-            # headers.
-            if format in ['SEGY', 'SU', 'SEG2']:
-                continue
+          # XXX: skip SEGY and SU formats for now as they need some special
+          # headers.
+          if format in ['SEGY', 'SU', 'SEG2']:
+              continue
 
-            yappi.clear_stats()
-            yappi.set_clock_type('wall')
-            yappi.start()
+          yappi.clear_stats()
+          yappi.set_clock_type('wall')
+          yappi.start()
+          try:
             dt = np.int_
             if format in ('MSEED', 'GSE2'):
                 dt = np.int32
@@ -250,6 +251,7 @@ class WaveformPluginsTestCase(unittest.TestCase):
                     os.remove(outfile[:-4] + '.QBN')
                     os.remove(outfile[:-4] + '.QHD')
 
+          finally:
             yappi.stop()
             print('=' * 60)
             print(format)
