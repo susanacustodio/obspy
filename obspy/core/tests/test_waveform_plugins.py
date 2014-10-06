@@ -192,6 +192,8 @@ class WaveformPluginsTestCase(unittest.TestCase):
             if format in ['SEGY', 'SU', 'SEG2']:
                 continue
 
+            print('=' * 60)
+            print(format)
             yappi.clear_stats()
             yappi.set_clock_type('wall')
             yappi.start()
@@ -243,6 +245,8 @@ class WaveformPluginsTestCase(unittest.TestCase):
                         msg = 'Not all threads finished after %d seconds!' % (
                             timeout)
                         print(msg, file=sys.stderr)
+                        yappi.get_func_stats().print_all()
+                        yappi.get_thread_stats().print_all()
                         start = time.time()
                 # Compare all values which should be identical and clean up
                 # files
@@ -253,8 +257,6 @@ class WaveformPluginsTestCase(unittest.TestCase):
                     os.remove(outfile[:-4] + '.QHD')
 
             yappi.stop()
-            print('=' * 60)
-            print(format)
             yappi.get_func_stats().print_all()
             yappi.get_thread_stats().print_all()
 
