@@ -11,6 +11,7 @@ import io
 from pkg_resources import load_entry_point
 import numpy as np
 import os
+import sys
 import threading
 import time
 import unittest
@@ -186,15 +187,14 @@ class WaveformPluginsTestCase(unittest.TestCase):
         start_time = UTCDateTime(2009, 1, 13, 12, 1, 2, 999000)
         formats = _getEntryPoints('obspy.plugin.waveform', 'writeFormat')
         for format in formats:
-          # XXX: skip SEGY and SU formats for now as they need some special
-          # headers.
-          if format in ['SEGY', 'SU', 'SEG2']:
-              continue
+            # XXX: skip SEGY and SU formats for now as they need some special
+            # headers.
+            if format in ['SEGY', 'SU', 'SEG2']:
+                continue
 
-          yappi.clear_stats()
-          yappi.set_clock_type('wall')
-          yappi.start()
-          try:
+            yappi.clear_stats()
+            yappi.set_clock_type('wall')
+            yappi.start()
             dt = np.int_
             if format in ('MSEED', 'GSE2'):
                 dt = np.int32
@@ -242,7 +242,8 @@ class WaveformPluginsTestCase(unittest.TestCase):
                     elif time.time() - start >= timeout:  # pragma: no cover
                         msg = 'Not all threads finished after %d seconds!' % (
                             timeout)
-                        raise Warning(msg)
+                        print(msg, file=sys.stderr)
+                        start = time.time()
                 # Compare all values which should be identical and clean up
                 # files
                 for st in streams:
@@ -251,7 +252,6 @@ class WaveformPluginsTestCase(unittest.TestCase):
                     os.remove(outfile[:-4] + '.QBN')
                     os.remove(outfile[:-4] + '.QHD')
 
-          finally:
             yappi.stop()
             print('=' * 60)
             print(format)
